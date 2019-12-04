@@ -1,0 +1,146 @@
+%
+% ewsn-full.tex
+%
+
+%
+% NOTE
+%
+% ewsn-proc is based on sigplan-proc-varsize 
+% The default of sigplan-proc-varsize is 9pt, indented paragraphs (ACM style)
+% For EWSN or other 10pt conference, use the 10pt option
+\documentclass[10pt,emptycopyrightspace]{ewsn-proc}
+
+% TODO do we really need this?
+% % hack to avoid the ugly ACM paragraph definition
+% % => can't leave blank line after this
+% (remove comment for this hack)
+% \renewcommand{\paragraph}[1]{\vskip 6pt\noindent\textbf{#1 }}
+
+\usepackage{graphicx}
+\usepackage{balance}
+\usepackage{comment}
+
+
+%
+% NOTE
+%
+% The EWSN reviewing process is double blind: authors must not
+% reveal their identities to the reviewers. Names and affiliations
+% will only be added for the camera-ready version (see below)
+\numberofauthors{1}
+\author{
+\alignauthor Double Blind \\
+  \affaddr{do not reveal authors}
+}
+
+
+%
+% NOTE
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+%% e-mail address with \email.
+%\numberofauthors{2}
+%\author{
+%\alignauthor Alice User \\
+%    \affaddr{University of Southern California}\\
+%    \email{alice@example.edu}
+%\alignauthor Bob Privacy \\
+%    \affaddr{Networked Embedded Systems Group}\\
+%    \affaddr{Swedish Institute of Computer Science}\\
+%    \email{bob@example.se}
+%}
+
+
+\title{Demo Paper: Multi-RAT IoT Gateway}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+
+This paper provides a sample of a \LaTeX\ document for EWSN. 
+It complements the document \textit{Author's (Alternate) Guide to
+Preparing ACM SIG Proceedings Using \LaTeX$2_\epsilon$\ and Bib\TeX}.
+This source file has been written with the intention of being
+compiled under \LaTeX$2_\epsilon$\ and BibTeX.
+
+To make best use of this sample document, run it through \texttt{pdflatex}
+and \texttt{bibtex} to directly produce a pdf document.
+\end{abstract}
+
+%
+% NOTE
+%
+% Do not provide category, terms, keywords for the reviewed submission.
+% They will only be added for the camera-ready version. Instructions will
+% be provided for the camera ready version.
+
+%
+% A category with the (minimum) three required fields
+% \category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+% \category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+% \terms{Delphi theory}
+% \keywords{ACM proceedings, \LaTeX, text tagging}
+
+\section{Introduction}
+  \label{sec:intro}
+Internet of Things (IoT) solutions have been enacted in different application domains independently targeting particular use cases resulting in plethora of different Radio Access Technologies (RATs) and application architectures. Upcoming challenges particularly in smart cities and smart industries need to provide miscellaneous combination of these wireless technologies to address different use cases. The lack of integrated infrastructure for providing convergent access is further exacerbated by ever increasing number of RATs and lack of a single solution fitting the requirements of all use cases. 
+
+
+Traditional approaches have used dedicated radio hardware for different communication technologies. This approach is hard to scale and lacks flexibility. In our previous work, we have introduced a solution architecture using software baseband processing called VGATE, virtualized gateway. The architecture uses Software Defined Radios (SDRs) for designing the core baseband functionality as software functions. The functions are e as containers on an edge and fog computing infrastructure. This approach makes these baseband functions easy to upgrade to future standard revisions.  This also opens up the possibility of deploying the baseband resources based on network load leading to better resource utilization with better energy efficiency.
+
+
+In this demo, we present a basic implementation of our VGATE architecture incorporating three baseband functions namely IEEE 802.15.4, LoRa and NB-IoT in a single testbed. We showcase the following:
+\begin{itemize}
+	\item Simultaneous multi-channel access for IEEE 802.15.4.
+	\item Feasibility of our VGATE architecture for providing convergent access.
+	\item Feasibility of simultaneously running multiple RATs without loss of performance on the same shared infrastructure.
+\end{itemize}
+
+\section{Testbed Implementation}
+\label{sec:implementation}
+Our VGATE architecture as introduced in [], has two main infrastructure layers: edge and radiohead. The radiohead manages access and transfers radio samples to and from the wireless medium.  The edge hosts the baseband function for each RAT. Both the radiohead and edge functions are virtualized as self-contained containers. 
+
+The focus of our testbed development is to design the baseband functions as also exploration of necessary methods needed to support the simultaneous operation of multiple RATs on a single shared infrastructure. A cluster of these functions and methods are formed into a container which is deployed on the edge and radiohead. A short description of the software components is presented below. 
+
+\subsection{Radiohead}
+The radiohead functions are designed in the GNU Radio framework. The main functionalities implemented are described as follows.
+\begin{itemize}
+	\item \textbf{USB-Ethernet conversion}: This performs the interface adaptation from the USB to Ethernet interface. Both TCP and UDP are utilized as transport protocols.
+	
+	\item \textbf{IQ-sample filtering}: In order to make the traffic on the ethernet link adaptive to the air-interface traffic, preamble detection is used. This enables us to suppress the unnecessary radio samples.
+	
+	\item \textbf{ Multi-channel multiplexing/de-multiplexing}: This is implemented for IEEE 802.15.4. It multiplexes multiple channels into a single wideband signal on the downlink. In case of uplink, it demultiplexes the wideband signal into radio samples for each individual channel. This is implemented using polyphase filters.
+	
+\end{itemize}
+\subsection{Edge}
+Edge hosts the core signal processing functions for each RAT as also the networking stack. The main functionality of the Edge container for each of our RATs are described below.
+\begin{itemize}
+	\item \textbf{IEEE 802.15.4} : Contiki-NG provides the network stack for the IEEE 802.15.4 function through a UDP based radio driver. The CSMA Medium Access Control (MAC) layer is modified to support the increased round trip times introduced by the SDR setup. The physical layer (PHY) is adpated from [] to support our architecture and provide multi channel support. For our demonstration we use Light Weight Machine to Machine Server (LWM2M) as our application layer. We show the end to end communication stack functionality with Zolertia Firefly platform.
+		
+	\item \textbf{LoRa}: We adapted the GNU Radio based LoRa setup to our architecture as also introduce multi channel suport. Our LoRa function supports L1 and support simple application layer sending and receiving messages with Pycom PiFy platform.
+	
+
+	\item \textbf{NB-IoT}: We implement some key components of the OFDM transmitter for NB-IoT in GNU Radio. A convolutional coding rate of 1/2 is used. For demonstration purpose, a chat application is developed which supports sending of Telegram messages from a mobile phone to the receiver.
+\end{itemize}
+
+% Should there be some description about the demonstration scenario and stuff?
+\section{Results}
+
+%
+% NOTE
+%
+% The following commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\balance
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\end{document}
