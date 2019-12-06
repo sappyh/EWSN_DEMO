@@ -108,10 +108,10 @@
 
 \section{Introduction}
   \label{sec:intro}
-Internet of Things (IoT) solutions have been enacted in different application domains independently targeting particular use cases resulting in a plethora of different Radio Access Technologies (RATs) and application architectures. Upcoming challenges particularly in smart cities and industries must provide a combination of these wireless technologies to address different use cases. The lack of integrated infrastructure for convergent access is further exacerbated by the ever increasing number of RATs and the lack of a single solution fitting the requirements of all use cases. 
+Internet of Things (IoT) solutions have been enacted in different application domains independently targeting particular use cases resulting in a plethora of different Radio Access Technologies (RATs) and application architectures. Upcoming challenges particularly in smart cities and industries require a combination of these wireless technologies to address different use cases. The lack of integrated infrastructure for convergent access is further exacerbated by the ever increasing number of RATs and the lack of a single solution fitting the requirements of all use cases. 
 
 
-Traditional approaches have used dedicated radio hardware for different communication technologies. This approach is hard to scale and lacks flexibility. In our previous work, we have introduced VGATE~\cite{hazra2019handling}, a virtual gateway that uses software baseband processing. VGATE uses Software Defined Radios (SDRs) for designing the core baseband functionality as software functions. The functions are implemented as containers on an edge and fog computing infrastructure. This approach makes the baseband functions easy to upgrade to future standard revisions.  It also enables the possibility of deploying the baseband resources based on network load leading to better resource utilization with better energy efficiency.
+Traditional approaches have used dedicated radio hardware for different communication technologies. This approach is hard to scale and lacks flexibility. In our previous work, we have introduced VGATE~\cite{hazra2019handling}, a virtual gateway. VGATE uses Software Defined Radios (SDRs) for designing the core baseband functionality as software functions. The functions are implemented as containers on an edge and fog computing infrastructure. This approach makes the baseband functions easy to upgrade to future standard revisions.  It also enables the possibility of deploying the baseband resources based on network load leading to better resource utilization with better energy efficiency.
 
 
 In this demo, we present a basic implementation of our VGATE architecture incorporating three baseband functions, namely IEEE 802.15.4, LoRa and NB-IoT in a single testbed. We showcase the following:
@@ -124,7 +124,7 @@ In this demo, we present a basic implementation of our VGATE architecture incorp
 \section{VGATE Design and Implementation}
 \label{sec:implementation}
 Our VGATE architecture
-has two main infrastructure layers: edge and radiohead. The radiohead manages access and transfers radio samples to and from the wireless medium.  The edge hosts the baseband function for each RAT. Both the radiohead and edge functions are virtualized as self-contained containers. In this design, multiple RATs can be simultaneously supported at one shared Edge
+has two main infrastructure layers: edge and radiohead. The radiohead manages access and transfers radio samples to and from the wireless medium using an USRP SDR platform.  The edge hosts the baseband function for each RAT. Both the radiohead and edge functions are virtualized as self-contained containers. In this design, multiple RATs can be simultaneously supported at one shared Edge
 infrastructure. %We refer to this design as split setup.
 
 
@@ -133,11 +133,11 @@ We design the baseband functions to explore necessary methods needed to support 
 \subsection{Radiohead}
 The radiohead functions are designed in the GNU Radio framework. The main functionalities are the following:
 \begin{itemize}
-	\item \textbf{USB-Ethernet conversion}: This performs the interface adaptation from the USB to Ethernet interface. Both TCP and UDP are utilized as transport protocols.
+	\item \textbf{USB-Ethernet conversion}: Performs the interface adaptation from the USB-connected USRP to Ethernet using both TCP and UDP as transport protocols.
 	
 	\item \textbf{IQ-sample filtering}: In order to reduce the traffic on the Ethernet, we implement preamble detection on the radiohead. This enables us to suppress unnecessary radio samples and transmit only radio samples that belong to a packet to the edge. 
 	
-	\item \textbf{ Multi-channel multiplexing/de-multiplexing}: This is implemented for IEEE 802.15.4. It multiplexes multiple channels into a single wideband signal on the downlink. For the uplink, it demultiplexes the wideband signal into radio samples for each individual channel. This is implemented using polyphase filters.
+	\item \textbf{Multi-channel multiplexing/de-multiplexing}: This is implemented for IEEE 802.15.4. It multiplexes multiple channels into a single wideband signal on the downlink. For the uplink, it demultiplexes the wideband signal into radio samples for each individual channel. This is implemented using polyphase filters.
 	
 \end{itemize}
 \subsection{Edge}
@@ -158,7 +158,7 @@ The edge hosts the core signal processing functions for each RAT and also the ne
 \begin{figure}[t]
   \vspace{-0.5cm}
   \centering
-	\includegraphics[width= 0.42 \textwidth]{setup.png}
+	\includegraphics[width= 0.42 \textwidth]{setup-alt.png}
 	\caption{Evaluation Setup}
 	\label{fig:setup}
 \end{figure}
@@ -175,25 +175,22 @@ rate is set to 1.92 Msps. Finally, USRP~3 is
 configured at the EU 863-870 MHz unlicensed band for LoRa. The sample
 rate is set to 1Msps to support up to 2 channels.
 
-The radio heads communicate with the edge over Ethernet using UDP. The edge hosts the networking stack including the physical layer. As IoT devices we use a Zolertia Firefly (802.15.4), a LoRa  Pycom FiPy and for NB-IoT, we develop our own NB-IoT receiver emulator using an USRP and a laptop or mini PC, on which implement some key components of NB-IoT receiver functionalities using GNU Radio.
+The radio heads communicate with the edge over Ethernet using UDP. The edge hosts the networking stack including the physical layer. As IoT devices we use a Zolertia Firefly (802.15.4), a LoRa  Pycom FiPy and for NB-IoT, we develop our own NB-IoT receiver emulator using an USRP and a laptop or mini PC, on which some key components of the NB-IoT receiver are implemented using GNU Radio.
 
-\fakepar{Evaluation}
-
-The goal of this experiments is to show that the
+\fakepar{Experimental results}
+The goal of this experiment is to show that the
 performance of each IoT RAT should not suffer when running with other IoT RATs simultaneously.
 
-Figure~\ref{fig:5-5} shows the ping results in terms of CDF against
-the Ping round-trip times (RTT) values and the packet error (PER) in
+Figure~\ref{fig:5-5} shows the ping results as a CDF of
+the round-trip times (RTT) values and the packet error (PER) in
 each RAT combination.  The figure shows increase in PER value when
 including additional RATs.  As the execution of IEEE 802.15.4 is
-highly computing intensive, the packet error rate (PER) increases
-slightly due to the resource contention at the radio head (implemented
-in software on a PC) in case of multi-RAT, which is not part of the
-Edge. The MAC retransmission timeout for Acknowledgements of
+highly compute intensive, the packet error rate (PER) increases
+slightly due to the resource contention at the radio head. The MAC retransmission timeout for Acknowledgements of
 successfully transmitted packets is set to 100ms, which explains the
 knee in the curves around that 100ms point in Figure~\ref{fig:5-5}.
 In real scenarios, the radio head functions will be implemented in
-hardware, e.g. FPGA, DSP etc. which would avoids this
+hardware, e.g. FPGA, DSP etc. which would avoid this
 problem. Therefore, the results show that IEEE 802.15.4 can be
 realized with same performance in presence of other RATs in our
 Multi-RAT IoT scenario.
@@ -233,7 +230,7 @@ LoRa receiver is not affected by the presence of other RATs with all
 the combinations showing close to 0\% PER when SNR is set greater than
 -10dB.
 
-\fakepar{Summary} We have presented VGATE, a multi-RAT IoT gateway.
+\fakepar{Conclusions} We have presented VGATE, a multi-RAT IoT gateway.
 Our results indicate that with VGATE, multiple RATs can be
 simultaneously supported at one shared edge infrastructure
 with little impact on protocol performance.
