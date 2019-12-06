@@ -91,6 +91,15 @@
 %and \texttt{bibtex} to directly produce a pdf document.
 %\end{abstract}
 
+\begin{abstract}
+  We present VGATE, a softwarised, multiple-RAT IoT gateway.  The
+  baseband of 802.15.4, LoRa and NB-IoT are implemented with
+  software-defined radio in containers that can execute in an edge
+  computing platform.  The demo shows simultaneous multi-channel
+  access and simultaneous execution of multiple RATs in a shared
+  infrastructure.
+\end{abstract}
+
 %
 % NOTE
 %
@@ -158,14 +167,14 @@ The edge hosts the core signal processing functions for each RAT and also the ne
 \begin{figure}[t]
   \vspace{-0.5cm}
   \centering
-	\includegraphics[width= 0.42 \textwidth]{setup-alt.png}
+	\includegraphics[width= 0.40 \textwidth]{setup-alt.png}
 	\caption{Evaluation Setup}
 	\label{fig:setup}
 \end{figure}
 
-\fakepar{Setup} As shown in Figure~\ref{fig:setup}, our evaluation setup includes
+\fakepar{Setup} Figure~\ref{fig:setup} shows our evaluation setup including
 three USRPs with the corresponding radioheads that perform the
-radiohead functions described above. USRP~1 is configured at 2.4 GHz
+functions described above. USRP~1 is configured at 2.4 GHz
 band with a sample rate of 15 Msps to cover three 5 MHz channels for
 the IEEE 802.15.4 multi-channel implementation. USRP~2 handles NB-IoT;
 also at 2.4 GHz but non-overlapped with the IEEE 802.15.4
@@ -182,13 +191,13 @@ The goal of this experiment is to show that the
 performance of each IoT RAT should not suffer when running with other IoT RATs simultaneously.
 
 Figure~\ref{fig:5-5} shows the ping results as a CDF of
-the round-trip times (RTT) values and the packet error (PER) in
+the round-trip times (RTT) values and the packet error rate (PER) for
 each RAT combination.  The figure shows increase in PER value when
 including additional RATs.  As the execution of IEEE 802.15.4 is
-highly compute intensive, the packet error rate (PER) increases
-slightly due to the resource contention at the radio head. The MAC retransmission timeout for Acknowledgements of
+highly compute intensive, the PER increases
+slightly due to the resource contention at the radio head. The MAC retransmission timeout for ACKs of
 successfully transmitted packets is set to 100ms, which explains the
-knee in the curves around that 100ms point in Figure~\ref{fig:5-5}.
+knee in the curves around that 100ms point.
 In real scenarios, the radio head functions will be implemented in
 hardware, e.g. FPGA, DSP etc. which would avoid this
 problem. Therefore, the results show that IEEE 802.15.4 can be
