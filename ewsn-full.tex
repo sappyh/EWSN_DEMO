@@ -126,8 +126,8 @@ Traditional approaches have used dedicated radio hardware for different communic
 In this demo, we present a basic implementation of our VGATE architecture incorporating three baseband functions, namely IEEE 802.15.4, LoRa and NB-IoT in a single testbed. We showcase the following:
 \begin{itemize}
 	\item Simultaneous multi-channel access for IEEE 802.15.4.
-	\item Feasibility of our VGATE architecture for providing convergent access.
-	\item Feasibility of simultaneously running multiple RATs without loss of performance on the same shared infrastructure.
+%	\item Feasibility of our VGATE architecture for providing convergent access.
+	\item Feasibility of simultaneously running multiple RATs without loss of performance on the same shared infrastructure using VGATE architecture.
 \end{itemize}
 
 \section{VGATE Design and Implementation}
@@ -152,11 +152,11 @@ The radiohead functions are designed in the GNU Radio framework. The main functi
 \subsection{Edge}
 The edge hosts the core signal processing functions for each RAT and also the networking stack. The main functionality of the Edge container for each of our RATs are:
 \begin{itemize}
-	\item \textbf{IEEE 802.15.4}: Contiki-NG provides the network stack for the IEEE 802.15.4 function through a UDP-based radio driver. The CSMA Medium Access Control (MAC) layer is modified to support the increased round trip times introduced by the SDR setup. The physical layer (PHY) is adpated from [] to support our architecture and provides multi channel support. For our demonstration we use a Light Weight Machine to Machine Server (LWM2M) as our application layer. 		
-	\item \textbf{LoRa}: We adapt the GNU Radio-based LoRa setup to our architecture and also introduce multi channel support. Our LoRa function supports L1 and simple application layer sending and receiving messages with the Pycom Fife platform.
+	\item \textbf{IEEE 802.15.4}: Contiki-NG provides the network stack for the IEEE 802.15.4 function through a UDP-based radio driver. The CSMA Medium Access Control (MAC) layer is modified to support the increased round trip times introduced by the SDR setup. The physical layer provides multi channel support. For our demonstration we use a Light Weight Machine to Machine Server (LWM2M) as our application layer. 		
+	\item \textbf{LoRa}: We adapt the GNU Radio-based LoRa setup to our architecture and also introduce multi channel support. Our LoRa function supports L1 and simple application layer sending and receiving messages with the Pycom FiPy platform.
 	
 
-	\item \textbf{NB-IoT}: We implement some key components of the OFDM transmitter for NB-IoT in GNU Radio. A convolutional coding rate of 1/2 is used. We have developed a chat application that supports sending of Telegram messages from a mobile phone to the receiver.
+	\item \textbf{NB-IoT}: We implement some key components of the OFDM transmitter for NB-IoT in GNU Radio. We have developed a chat application that supports sending of Telegram messages from a mobile phone to the receiver.
 \end{itemize}
 
 % Should there be some description about the demonstration scenario and stuff?
@@ -165,40 +165,40 @@ The edge hosts the core signal processing functions for each RAT and also the ne
 \section{Evaluation}
 
 \begin{figure}[t]
-  \vspace{-0.5cm}
   \centering
-	\includegraphics[width= 0.40 \textwidth]{setup-alt.png}
+	\includegraphics[width= 0.40 \textwidth]{setup-alt.jpg}
 	\caption{Evaluation Setup}
 	\label{fig:setup}
+  \vspace{-0.5cm}
 \end{figure}
 
 \fakepar{Setup} Figure~\ref{fig:setup} shows our evaluation setup including
-three USRPs with the corresponding radioheads that perform the
-functions described above. USRP~1 is configured at 2.4 GHz
-band with a sample rate of 15 Msps to cover three 5 MHz channels for
-the IEEE 802.15.4 multi-channel implementation. USRP~2 handles NB-IoT;
+three USRPs with the corresponding radiohead functions. USRP~1 is configured at 2.4 GHz
+band with a sample rate of 15 Msps to cover three 5 MHz 802.15.4 channels.
+%for the 802.15.4 multi-channel implementation.
+USRP~2 handles NB-IoT;
 also at 2.4 GHz but non-overlapped with the IEEE 802.15.4
-carriers. The choice of 2.4 GHz is only for test and demonstration
-purpose to be able to transmit the RF signal over the air. The sample
+carrier frequencies. The choice of 2.4 GHz is only for test and demonstration
+purposes. The sample
 rate is set to 1.92 Msps. Finally, USRP~3 is
 configured at the EU 863-870 MHz unlicensed band for LoRa. The sample
 rate is set to 1Msps to support up to 2 channels.
 
-The radio heads communicate with the edge over Ethernet using UDP. The edge hosts the networking stack including the physical layer. As IoT devices we use a Zolertia Firefly (802.15.4), a LoRa  Pycom FiPy and for NB-IoT, we develop our own NB-IoT receiver emulator using an USRP and a laptop or mini PC, on which some key components of the NB-IoT receiver are implemented using GNU Radio.
+The radiohead communicates with the edge over Ethernet using UDP. The edge hosts the networking stack including the physical layer. As IoT devices we use a Zolertia Firefly (802.15.4), a LoRa  Pycom FiPy and for NB-IoT, we develop our own NB-IoT receiver emulator using an USRP and a laptop, on which some key components of the NB-IoT receiver are implemented using GNU Radio.
 
 \fakepar{Experimental results}
 The goal of this experiment is to show that the
 performance of each IoT RAT should not suffer when running with other IoT RATs simultaneously.
 
-Figure~\ref{fig:5-5} shows the ping results as a CDF of
+Figure~\ref{fig:5-5} shows the ping results for IEEE 802.15.4 as a CDF of
 the round-trip times (RTT) values and the packet error rate (PER) for
 each RAT combination.  The figure shows increase in PER value when
 including additional RATs.  As the execution of IEEE 802.15.4 is
 highly compute intensive, the PER increases
-slightly due to the resource contention at the radio head. The MAC retransmission timeout for ACKs of
+slightly due to the resource contention at the radiohead. The MAC retransmission timeout for ACKs of
 successfully transmitted packets is set to 100ms, which explains the
 knee in the curves around that 100ms point.
-In real scenarios, the radio head functions will be implemented in
+In real scenarios, the radiohead functions will be implemented in
 hardware, e.g. FPGA, DSP etc. which would avoid this
 problem. Therefore, the results show that IEEE 802.15.4 can be
 realized with same performance in presence of other RATs in our
@@ -206,7 +206,7 @@ Multi-RAT IoT scenario.
 
 
 
-\begin{figure}[h]
+\begin{figure}[t]
 %	\vspace{-0.3cm}
   \centering
 	\includegraphics[width= 0.4 \textwidth]{5-5.png}
@@ -216,23 +216,24 @@ Multi-RAT IoT scenario.
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[t]
   \vspace{-0.3cm}
 	\centering
 	\includegraphics[width= 0.4 \textwidth]{5-6.png}
 	\caption{Comparison PER vs SNR for LoRa in multi-rat scenario, SF = 7
 }
 	\label{fig:5-6}
+  \vspace{-0.5cm}
 \end{figure}
 
 
 Figure~\ref{fig:5-6} shows the PER vs SNR results for LoRa in a
 multi-RAT scenario. In this experiment, the LoRa received signal power
-is kept constant at -28dBm and noise is added in the radio head
-software to for SNR configuration to obtain a specific value of
+is kept constant at -28dBm and noise is added in the radiohead
+software to obtain a specific value of
 SNR. The Pycom FiPy continuously transmits 500 data packets with SF =
-7 and at the edge we count the number of received packets for
-different SNRs. Figure 5-6 shows that the results are very similar
+7 (highest data rate, lowest sensitivity case) and at the edge we count the number of received packets for
+different SNRs. Figure~\ref{fig:5-6} shows that the results are very similar
 among three scenarios for single, two and three RATs running
 simultaneously, respectively. The results indicate that the performance of our
 LoRa receiver is not affected by the presence of other RATs with all
@@ -243,6 +244,10 @@ the combinations showing close to 0\% PER when SNR is set greater than
 Our results indicate that with VGATE, multiple RATs can be
 simultaneously supported at one shared edge infrastructure
 with little impact on protocol performance.
+
+\section{Acknowledgement}
+This work has been (partially) funded by the H2020 EU/TW joint
+action 5G-DIVE (Grant \#859881)
 
 
 %TV: did not get this to work...always went on 3rd page
