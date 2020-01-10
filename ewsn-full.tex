@@ -38,8 +38,8 @@
     \alignauthor Saptarshi Hazra,
     Thiemo Voigt,
     Bengt Ahlgren,
-    Chenguang Lu,\textsuperscript{*}
-    Daniel Cederholm,\textsuperscript{*}
+    Chenguang Lu \textsuperscript{*},
+    Daniel Cederholm\textsuperscript{*},
     Gyanesh Patra\textsuperscript{*}\sharedaffiliation
 		 \affaddr{RISE SICS, Sweden. \textsuperscript{*}Ericsson Research, Sweden.}\\
 		 \affaddr{saptarshi.hazra@ri.se,bengt.ahlgren@ri.se, thiemo.voigt@ri.se,chenguang.lu@ericsson.com}\\
@@ -93,7 +93,7 @@
 
 \begin{abstract}
   We present VGATE, a softwarised, multiple-RAT IoT gateway.  The
-  baseband of 802.15.4, LoRa and NB-IoT are implemented with
+  baseband of IEEE 802.15.4, LoRa and NB-IoT are implemented with
   software-defined radio in containers that can execute in an edge
   computing platform.  The demo shows simultaneous multi-channel
   access and simultaneous execution of multiple RATs in a shared
@@ -120,7 +120,7 @@
 Internet of Things (IoT) solutions have been enacted in different application domains independently targeting particular use cases resulting in a plethora of different Radio Access Technologies (RATs) and application architectures. Upcoming challenges particularly in smart cities and industries require a combination of these wireless technologies to address different use cases. The lack of integrated infrastructure for convergent access is further exacerbated by the ever increasing number of RATs and the lack of a single solution fitting the requirements of all use cases. 
 
 
-Traditional approaches have used dedicated radio hardware for different communication technologies. This approach is hard to scale and lacks flexibility. In our previous work, we have introduced VGATE~\cite{hazra2019handling}, a virtual gateway. VGATE uses Software Defined Radios (SDRs) for designing the core baseband functionality as software functions. The functions are implemented as containers on an edge and fog computing infrastructure. This approach makes the baseband functions easy to upgrade to future standard revisions.  It also enables the possibility of deploying the baseband resources based on network load leading to better resource utilization with better energy efficiency.
+Traditional approaches have used dedicated radio hardware for different communication technologies. This approach is hard to scale and lacks flexibility. We have previously introduced VGATE~\cite{hazra2019handling}, a virtual gateway. VGATE uses Software Defined Radios (SDRs) for designing the core baseband functionality as software functions. The functions are implemented as containers on an edge and fog computing infrastructure. This approach makes the baseband functions easy to upgrade to future standard revisions.  It also enables the possibility of deploying the baseband resources based on network load leading to better resource utilization with better energy efficiency.
 
 
 In this demo, we present a basic implementation of our VGATE architecture incorporating three baseband functions, namely IEEE 802.15.4, LoRa and NB-IoT in a single testbed. We showcase the following:
@@ -152,8 +152,8 @@ The radiohead functions are designed in the GNU Radio framework. The main functi
 \subsection{Edge}
 The edge hosts the core signal processing functions for each RAT and also the networking stack. The main functionality of the Edge container for each of our RATs are:
 \begin{itemize}
-	\item \textbf{IEEE 802.15.4}: Contiki-NG provides the network stack for the IEEE 802.15.4 function through a UDP-based radio driver. The CSMA Medium Access Control (MAC) layer is modified to support the increased round trip times introduced by the SDR setup. The physical layer provides multi channel support. For our demonstration we use a Light Weight Machine to Machine Server (LWM2M) as our application layer. 		
-	\item \textbf{LoRa}: We adapt the GNU Radio-based LoRa setup to our architecture and also introduce multi channel support. Our LoRa function supports L1 and simple application layer sending and receiving messages with the Pycom FiPy platform.
+	\item \textbf{IEEE 802.15.4}: Contiki-NG provides the network stack for the IEEE 802.15.4 function through a UDP-based radio driver. The CSMA Medium Access Control (MAC) layer is modified to support the increased round trip times introduced by the SDR setup. The physical layer provides multi-channel support. For our demonstration we use a Light Weight Machine to Machine Server (LWM2M) as our application layer. 		
+	\item \textbf{LoRa}: We adapt the GNU Radio-based LoRa setup to our architecture and also introduce multi-channel support. Our LoRa function supports L1 and simple application layer sending and receiving messages with the Pycom FiPy platform.
 	
 
 	\item \textbf{NB-IoT}: We implement some key components of the OFDM transmitter for NB-IoT in GNU Radio. We have developed a chat application that supports sending of Telegram messages from a mobile phone to the receiver.
@@ -234,10 +234,10 @@ software to obtain a specific value of
 SNR. The Pycom FiPy continuously transmits 500 data packets with SF =
 7 (highest data rate, lowest sensitivity case) and at the edge we count the number of received packets for
 different SNRs. Figure~\ref{fig:5-6} shows that the results are very similar
-among three scenarios for single, two and three RATs running
+among the three scenarios for single, two and three RATs running
 simultaneously, respectively. The results indicate that the performance of our
 LoRa receiver is not affected by the presence of other RATs with all
-the combinations showing close to 0\% PER when SNR is set greater than
+the combinations showing close to 0\% PER when the SNR is set greater than
 -10dB.
 
 \fakepar{Conclusions} We have presented VGATE, a multi-RAT IoT gateway.
@@ -245,7 +245,7 @@ Our results indicate that with VGATE, multiple RATs can be
 simultaneously supported at one shared edge infrastructure
 with little impact on protocol performance.
 
-\section{Acknowledgement}
+\section*{Acknowledgement}
 This work has been (partially) funded by the H2020 EU/TW joint
 action 5G-DIVE (Grant \#859881)
 
